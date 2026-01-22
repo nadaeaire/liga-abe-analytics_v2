@@ -8,3 +8,4 @@ pytz
 matplotlib
 psycopg2-binary
 sqlalchemy
+supabase
