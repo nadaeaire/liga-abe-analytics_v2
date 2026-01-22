@@ -52,7 +52,7 @@ except Exception as e:
     st.stop()
 
 # 4. Sidebar y Navegación
-st.sidebar.image("GravityStats_logo.png", width=300)
+st.sidebar.image("GravityStats_Logo.png", width=300)
 st.sidebar.markdown(
     """
     <div style="margin-top: -20px;">
