@@ -15,14 +15,14 @@ def render_view(df_ignored, categoria_sel):
     except:
         df_teams_raw = pd.DataFrame()
 
-    # 2. Filtrar por categoría
+    # LMBPF: Sin filtro de categoría (liga de una sola rama)
     if not df_teams_raw.empty:
-        df_teams = df_teams_raw[df_teams_raw['Categoria'] == categoria_sel].copy()
+        df_teams = df_teams_raw.copy()
     else:
         df_teams = pd.DataFrame()
-    
+
     if df_teams.empty:
-        st.warning("No hay datos de equipos para esta categoría.")
+        st.warning("No hay datos de equipos disponibles.")
         st.stop()
 
     # 3. Slider y Config
@@ -32,7 +32,7 @@ def render_view(df_ignored, categoria_sel):
     
     col_header, col_slider_eq = st.columns([1, 1])
     with col_header:
-        st.title(f"Equipos | {categoria_sel}")
+        st.title("Equipos")
     with col_slider_eq:
         st.markdown("<br>", unsafe_allow_html=True)
         if max_games_found > 1:
@@ -42,7 +42,7 @@ def render_view(df_ignored, categoria_sel):
             games_window_eq = 1
         utils.rastrear_cambio("Slider Juegos (Equipos)", games_window_eq)
 
-    SEASON_GAMES = 30 if "Femenil" in categoria_sel else 36
+    SEASON_GAMES = 30  # LMBPF temporada regular
 
     # 4. Preparación (Directa, sin GroupBy)
     df_games = df_teams.copy()
