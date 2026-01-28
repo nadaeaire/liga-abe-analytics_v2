@@ -25,6 +25,8 @@ def get_supabase_client() -> Client:
     try:
         url = st.secrets["supabase_config"]["url"]
         key = st.secrets["supabase_config"]["anon_key"]
+        # DEBUG: Mostrar que las credenciales se leyeron (sin mostrar valores sensibles)
+        st.sidebar.success(f"🔧 Supabase URL: {url[:30]}...")
         return create_client(url, key)
     except Exception as e:
         st.error(f"Error Supabase Client: {e}")
@@ -92,6 +94,8 @@ def cargar_datos_equipos_only():
     supabase = get_supabase_client()
     try:
         response = supabase.table("vista_equipos_master").select("*").limit(10000).execute()
+        # DEBUG
+        st.write(f"🔧 DEBUG data_loader: response.data tiene {len(response.data) if response.data else 0} registros")
         if not response.data: return pd.DataFrame()
         
         df = pd.DataFrame(response.data)

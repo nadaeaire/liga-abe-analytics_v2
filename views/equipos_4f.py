@@ -17,10 +17,10 @@ def render_view(df_ignored, categoria_sel):
         st.warning("No hay datos disponibles.")
         st.stop()
 
-    # 2. Filtrar Categoría
-    df_teams = df_teams_raw[df_teams_raw['Categoria'] == categoria_sel].copy()
+    # LMBPF: Sin filtro de categoría (liga de una sola rama)
+    df_teams = df_teams_raw.copy()
     if df_teams.empty:
-        st.warning(f"No hay equipos en: {categoria_sel}")
+        st.warning("No hay equipos disponibles.")
         st.stop()
 
     # 3. Slider y Header
@@ -29,7 +29,7 @@ def render_view(df_ignored, categoria_sel):
     
     col_h, col_s = st.columns([1, 1])
     with col_h:
-        st.title(f"Four Factors | {categoria_sel}")
+        st.title("Four Factors")
     with col_s:
         st.markdown("<br>", unsafe_allow_html=True)
         if max_games > 1:
