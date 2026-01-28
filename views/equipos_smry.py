@@ -6,13 +6,20 @@ import modules.utils as utils
 from modules.data_loader import cargar_datos_equipos_only # Importamos la carga especial
 
 def render_view(df_ignored, categoria_sel):
-    # Nota: df_ignored es el argumento que viene de app.py (df_raw), 
+    # Nota: df_ignored es el argumento que viene de app.py (df_raw),
     # pero aquí lo ignoramos porque usamos la carga optimizada propia.
-    
+
     # 1. Cargar datos optimizados (Carril B)
     try:
         df_teams_raw = cargar_datos_equipos_only()
-    except:
+        # DEBUG: Mostrar info de carga
+        st.sidebar.markdown("---")
+        st.sidebar.markdown("**🔧 DEBUG:**")
+        st.sidebar.write(f"Filas cargadas: {len(df_teams_raw)}")
+        if not df_teams_raw.empty:
+            st.sidebar.write(f"Columnas: {list(df_teams_raw.columns)[:5]}...")
+    except Exception as e:
+        st.error(f"Error en carga: {e}")
         df_teams_raw = pd.DataFrame()
 
     # LMBPF: Sin filtro de categoría (liga de una sola rama)
@@ -22,7 +29,7 @@ def render_view(df_ignored, categoria_sel):
         df_teams = pd.DataFrame()
 
     if df_teams.empty:
-        st.warning("No hay datos de equipos disponibles.")
+        st.warning("No hay datos de equipos disponibles. Verifica que la vista 'vista_equipos_master' exista en Supabase.")
         st.stop()
 
     # 3. Slider y Config
