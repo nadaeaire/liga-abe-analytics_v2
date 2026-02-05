@@ -14,7 +14,7 @@ import views.players_prfl as view_players_prfl
 
 # 1. Configuración Global
 st.set_page_config(
-    page_title="Analytics Liga ABE — GravityStats x Nada Está en el Aire",
+    page_title="Analytics LMBPF — GravityStats x Nada Está en el Aire",
     page_icon="🏀",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -56,7 +56,7 @@ st.sidebar.image("GravityStats_Logo.png", width=300)
 st.sidebar.markdown(
     """
     <div style="margin-top: -20px;">
-        <h1 style="margin-top: 20px; margin-bottom: 0px; font-size: 25px; color: #dc362a;">Analytics Liga ABE</h1>
+        <h1 style="margin-top: 20px; margin-bottom: 0px; font-size: 25px; color: #dc362a;">Analytics LMBPF</h1>
         <h3 style="margin-top: -25px; font-weight: bold; color: #0a173c;">GravityStats</h3>
         <h3 style="margin-top: -33px; font-weight: normal; color: #0a173c; font-size: 14px">Nada Está en el Aire</h3>
     </div>
@@ -64,19 +64,16 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-opciones_cat = ["Femenil D1", "Varonil D1"]
-categoria_sel = st.sidebar.selectbox("Categoría:", opciones_cat, index=0)
-utils.rastrear_cambio("Categoría Seleccionada", categoria_sel)
-
-# Filtrado Global del DataFrame de Jugadores (Game Logs)
+# LMBPF: Sin selector de categoría (liga de una sola rama)
+# Usamos todos los datos disponibles
 if not df_raw.empty:
-    df = df_raw[df_raw['Categoria'] == categoria_sel].copy()
+    df = df_raw.copy()
 else:
     df = pd.DataFrame()
 
 # Aviso si no hay jugadores
 if df.empty:
-    st.sidebar.warning(f"No hay datos de stats para {categoria_sel}.")
+    st.sidebar.warning("No hay datos de stats disponibles.")
 
 st.sidebar.divider()
 
@@ -128,20 +125,23 @@ if st.session_state.view_mode == 'profile':
 
 # B) Si estamos en modo Normal, mostramos lo que diga el menú
 else:
+    # LMBPF: Pasamos "LMBPF" como categoría fija
+    categoria_lmbpf = "LMBPF"
+
     if opcion == "📊 Por partido":
         if df.empty:
             st.error("No hay datos disponibles.")
         else:
-            view_players_avg.render_view(df, df_players, df_rosters, categoria_sel)
+            view_players_avg.render_view(df, df_players, df_rosters, categoria_lmbpf)
 
     elif opcion == "🛸 Avanzadas":
         if df.empty:
             st.error("No hay datos disponibles.")
         else:
-            view_players_adv.render_view(df, df_players, df_rosters, categoria_sel)
+            view_players_adv.render_view(df, df_players, df_rosters, categoria_lmbpf)
 
     elif opcion == "🤝 Equipos":
-        view_equipos_smry.render_view(df, categoria_sel)
-        
+        view_equipos_smry.render_view(df, categoria_lmbpf)
+
     elif opcion == "4️⃣ Four Factors":
-        view_equipos_4f.render_view(df, categoria_sel)
+        view_equipos_4f.render_view(df, categoria_lmbpf)

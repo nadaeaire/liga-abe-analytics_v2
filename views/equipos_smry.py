@@ -6,23 +6,30 @@ import modules.utils as utils
 from modules.data_loader import cargar_datos_equipos_only # Importamos la carga especial
 
 def render_view(df_ignored, categoria_sel):
-    # Nota: df_ignored es el argumento que viene de app.py (df_raw), 
+    # Nota: df_ignored es el argumento que viene de app.py (df_raw),
     # pero aquí lo ignoramos porque usamos la carga optimizada propia.
-    
+
     # 1. Cargar datos optimizados (Carril B)
     try:
         df_teams_raw = cargar_datos_equipos_only()
-    except:
+        # DEBUG: Mostrar info de carga
+        st.sidebar.markdown("---")
+        st.sidebar.markdown("**🔧 DEBUG:**")
+        st.sidebar.write(f"Filas cargadas: {len(df_teams_raw)}")
+        if not df_teams_raw.empty:
+            st.sidebar.write(f"Columnas: {list(df_teams_raw.columns)[:5]}...")
+    except Exception as e:
+        st.error(f"Error en carga: {e}")
         df_teams_raw = pd.DataFrame()
 
-    # 2. Filtrar por categoría
+    # LMBPF: Sin filtro de categoría (liga de una sola rama)
     if not df_teams_raw.empty:
-        df_teams = df_teams_raw[df_teams_raw['Categoria'] == categoria_sel].copy()
+        df_teams = df_teams_raw.copy()
     else:
         df_teams = pd.DataFrame()
-    
+
     if df_teams.empty:
-        st.warning("No hay datos de equipos para esta categoría.")
+        st.warning("No hay datos de equipos disponibles. Verifica que la vista 'vista_equipos_master' exista en Supabase.")
         st.stop()
 
     # 3. Slider y Config
@@ -32,7 +39,7 @@ def render_view(df_ignored, categoria_sel):
     
     col_header, col_slider_eq = st.columns([1, 1])
     with col_header:
-        st.title(f"Equipos | {categoria_sel}")
+        st.title("Equipos")
     with col_slider_eq:
         st.markdown("<br>", unsafe_allow_html=True)
         if max_games_found > 1:
@@ -42,7 +49,7 @@ def render_view(df_ignored, categoria_sel):
             games_window_eq = 1
         utils.rastrear_cambio("Slider Juegos (Equipos)", games_window_eq)
 
-    SEASON_GAMES = 30 if "Femenil" in categoria_sel else 36
+    SEASON_GAMES = 30  # LMBPF temporada regular
 
     # 4. Preparación (Directa, sin GroupBy)
     df_games = df_teams.copy()

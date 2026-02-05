@@ -5,7 +5,7 @@ import math
 import modules.utils as utils
 
 def render_view(df, df_players, df_rosters, categoria_sel):
-    st.title(f"Advanced Stats | {categoria_sel}")
+    st.title("Advanced Stats")
 
     # --- 0. PREPARACIÓN DE METADATA ---
     df_players['player_id_str'] = df_players['player_id'].astype(str)
@@ -73,7 +73,7 @@ def render_view(df, df_players, df_rosters, categoria_sel):
             rank_h = f"#{int(row['rank_h'])}" if pd.notna(row['rank_h']) else "-"
             val_w = f"{row['w_clean']:.1f} kg" if pd.notna(row['w_clean']) else "N/A"
             rank_w = f"#{int(row['rank_w'])}" if pd.notna(row['rank_w']) else "-"
-            lbl_jugadores = "Jugadoras utilizadas" if "Femenil" in categoria_sel else "Jugadores utilizados"
+            lbl_jugadores = "Jugadoras utilizadas"  # LMBPF es liga femenil
 
             st.markdown("---")
             m1, m2, m3 = st.columns(3)
